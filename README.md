@@ -4,6 +4,7 @@
 
 La aplicación está organizada en una estructura modular y escalable:
 
+```
 /
 ├── app/
 │   ├── api/
@@ -22,7 +23,7 @@ La aplicación está organizada en una estructura modular y escalable:
 ├── Dockerfile
 ├── main.py
 └── requirements.txt
-
+````
 ## Componentes Principales
 
 ### 1. API Routes (`app/api/routes/`)
@@ -85,6 +86,7 @@ La aplicación está organizada en una estructura modular y escalable:
 - PyDantic
 - FFmpeg
 - Docker/
+````
 ├── app/
 │   ├── api/
 │   │   └── routes/
@@ -102,3 +104,4 @@ La aplicación está organizada en una estructura modular y escalable:
 ├── Dockerfile
 ├── main.py
 └── requirements.txt
+````
