@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Transcription Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Interview Transcription Service</h1>
+
+        <div class="form-section">
+            <h2>Submit Text (XSS Demo)</h2>
+            <form action="/submit-form" method="post">
+                <label for="user_text">Enter text:</label>
+                <input type="text" id="user_text" name="user_text">
+                <input type="submit" value="Submit Text">
+            </form>
+            {% if user_input %}
+                <div class="submitted-text">
+                    <h3>You submitted:</h3>
+                    <p>{{ user_input }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <div class="form-section">
+            <h2>Upload Audio for Transcription</h2>
+            <form action="/api/transcribe" method="post" enctype="multipart/form-data" id="transcriptionForm">
+                <label for="audiofile">Select audio file:</label>
+                <input type="file" id="audiofile" name="audio" accept="audio/*" required>
+                <input type="submit" value="Transcribe Audio">
+            </form>
+            <div id="transcriptionStatus" class="transcription-status">
+                <!-- Aquí se mostrará el estado de la transcripción -->
+            </div>
+        </div>
+
+        <!-- Aquí podríamos listar las transcripciones generadas más adelante -->
+        <div class="transcriptions-list">
+            <h2>Generated Transcriptions:</h2>
+            <p>(Transcription files will be listed here in a future update)</p>
+            <!-- Ejemplo de cómo podría lucir un item:
+            <div class="transcription-item">
+                <p><strong>File:</strong> 20250513_103000_myaudio.mp3.txt</p>
+                <a href="#">Download</a> | <a href="#">View</a>
+            </div>
+            -->
+        </div>
+    </div>
+
+    <script>
+        // Script simple para mostrar el mensaje de "Transcription started"
+        const transcriptionForm = document.getElementById('transcriptionForm');
+        const transcriptionStatus = document.getElementById('transcriptionStatus');
+
+        transcriptionForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevenir el envío normal del formulario
+
+            const formData = new FormData(transcriptionForm);
+
+            try {
+                const response = await fetch('/api/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    transcriptionStatus.innerHTML = `<p style="color: green;">${result.message}. Output file: ${result.file_path || 'N/A'}</p>`;
+                } else {
+                    transcriptionStatus.innerHTML = `<p style="color: red;">Error: ${result.detail || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                transcriptionStatus.innerHTML = `<p style="color: red;">Network error: ${error.message}</p>`;
+            }
+            transcriptionForm.reset(); // Limpiar el formulario
+        });
+    </script>
+</body>
+</html>
